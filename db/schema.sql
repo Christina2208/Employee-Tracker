@@ -20,3 +20,8 @@ CREATE TABLE employee (
     FOREIGN KEY (role_id) REFERENCES role(role_id),
     employee_id INT
 );
+
+CREATE TABLE manager (
+    manager_id INT PRIMARY KEY AUTO_INCREMENT,
+    manager_name VARCHAR(30) NOT NULL
+);
