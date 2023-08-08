@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.6.0"
+  },
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christina2208/Employee-Tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Christina2208/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/Christina2208/Employee-Tracker#readme",
+  "description": ""
+}
