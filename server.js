@@ -10,21 +10,21 @@ db.connect(async function(){
     promptMenu()
 } );
 
-//Function to prompt the user to make a selection: (starter function)
+//Prompt user to make a selection:
 function promptMenu(){
     inquirer.prompt([
     {
         type: 'list',
         name: 'choice',
-        message: 'Please choose from the following options:',
+        message: 'Please choose from the following menu:',
         choices: [
             'View all departments', 
-            'View all roles', 
+            'View all positions', 
             'View all employees',  
             'View managers',
             'Update employee position',
             'Add department',
-            'Add role',
+            'Add position',
             'Add employee'
         ]
     }
@@ -34,25 +34,25 @@ function promptMenu(){
             viewAllDep();
         }if (choices === 'View managers'){
             viewManagers();
-        }if (choices === 'View all roles'){
-            viewAllRoles();
+        }if (choices === 'View all positions'){
+            viewAllPositions();
         }if (choices === 'View all employees'){
             viewAllEmployees();
-        }if (choices === 'Update employee role'){
-            updateEmployeeRole();
+        }if (choices === 'Update employee position'){
+            updateEmployeePosition();
         }if (choices === 'Add department'){
             addDepartment();
-        }if (choices === 'Add role'){
-            addRole();
+        }if (choices === 'Add position'){
+            addPosition();
         }if (choices === 'Add employee'){
             addEmployee();
         }
     });
 };
 
-// function to view all the dempartments
+
 function viewAllDep(){
-    let sql = "SELECT * FROM department";
+    let sql = "SELECT * FROM departments";
     db.query(sql, (err, res)=>{
         if (err) throw err;
         console.log('All Departments:')
@@ -61,7 +61,6 @@ function viewAllDep(){
     })
 };
 
-//function ot view all the managers
 function viewManagers(){
     let sql = "SELECT * FROM managers";
     db.query(sql, (err, res)=>{
@@ -71,33 +70,30 @@ function viewManagers(){
         return promptMenu();
     })
 };
-
-//function to view all the roles
-function viewAllRoles (){
-    const sql = "SELECT role_id, title, salary, department_name AS department FROM role LEFT JOIN department ON role.department_id = department.department_id"; 
+function viewAllPositions (){
+    const sql = "SELECT position_id, title, salary, department_name AS department FROM positions LEFT JOIN departments ON positions.department_id = departments.department_id"; 
     db.query(sql, (err, res) =>{
         if(err) throw err;
-        console.log('All roles:');
+        console.log('All positions:');
+        console.log('All positions:');
         console.table(res);
         return promptMenu();
     });
 };
 
-//function to view all the employees
 function viewAllEmployees (){
-    const sql = "SELECT employee.employee_id, employee.first_name, employee.last_name, role.title AS title, manager.name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.role_id LEFT JOIN manager ON employee.manager_id = manager.manager_id";
+    const sql = "SELECT employees.employee_id, employees.first_name, employees.last_name, positions.title AS title, managers.manager_name AS manager FROM employees LEFT JOIN positions ON employees.position_id = positions.position_id LEFT JOIN managers ON employees.manager_id = managers.manager_id";
     db.query(sql, (err, res)=>{
         if(err) throw err;
         console.log('All employees:');
-        console.table(res); 
+        console.table(res);
         return promptMenu();
     });
 };
 
-//function to update the role of an employee
-function updateEmployeeRole(){
-    const sql = "SELECT first_name, last_name, employee_id from employee";
-    db.query(sql, (err, res)=>{
+function updateEmployeePosition(){
+const sql = "SELECT first_name, last_name, employee_id from employees";
+db.query(sql, (err, res)=>{
     if (err) throw err;
 
     const employees = res.map(({first_name, last_name, employee_id})=>({key: `${first_name} ${last_name}`, value: `${employee_id}`}));
@@ -106,42 +102,41 @@ function updateEmployeeRole(){
         {
             type: "list", 
             name: "employee", 
-            message: "Please select an employee to update their role.",
+            message: "Please select an employee to update their position.",
             choices: employees
         }
     ]).then((answers) =>{
         const employee = answers.employee;
         const params=[employee];
-        const sql = "SELECT title, role_id FROM role";
+        const sql = "SELECT title, position_id FROM positions";
         db.query(sql, (err, res)=>{
             if (err) throw err;
-            const positions = res.map(({title, role_id})=>({key: title, value: role_id }));
+            const positions = res.map(({title, position_id})=>({key: title, value: position_id }));
 
             inquirer.prompt([
                 {
                     type: "list", 
                     name: "position", 
-                    message: "what is the new role of this employee?",
+                    message: "what is the new position of this employee?",
                     choices: positions
                 }
             ]).then ((answers)=>{
                 const position = answers.position;
                 params.unshift(position);
-                const sql = 'UPDATE employee SET role_id = ? WHERE role_id = ?'
+                const sql = 'UPDATE employees SET position_id = ? WHERE position_id = ?'
             db.query(sql, params, (err)=>{
                 if(err){
                     throw err;
                 }
-                console.log('Role updated');
+                console.log('Position updated');
                 return promptMenu();
             })
             })
         })
     });
-})
+ })
 };
 
-//function to add a department
 function addDepartment(){
     inquirer.prompt([
         {
@@ -168,8 +163,7 @@ function addDepartment(){
     })
 };
 
-//function to add a role
-function addRole(){
+function addPosition(){
     return inquirer.prompt([
         {
             type: 'input',
@@ -224,7 +218,6 @@ function addRole(){
     })
 };
 
-//function to add an employee
 function addEmployee(){
     inquirer.prompt([
         {
