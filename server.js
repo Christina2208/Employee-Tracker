@@ -134,7 +134,7 @@ db.query(sql, (err, res)=>{
             })
         })
     });
- })
+})
 };
 
 function addDepartment(){
